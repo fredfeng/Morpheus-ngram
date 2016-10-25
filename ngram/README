@@ -1,0 +1,19 @@
+Step 1: 
+
+Generate training data:
+
+python post_process.py > train.txt
+
+Step 2:
+
+Train 2-gram model:
+
+ngram-count -order 2 -interpolate -cdiscount1 0 -cdiscount2 0.5   -text train.txt -lm 2gram.lm
+
+Step 3:
+
+Re-ranking:
+
+ngram -lm 2gram_v2.lm -ppl sketches/sketches-size4.txt -debug 1 > size4.tx
+
+python ngram_rank.py size4.txt
