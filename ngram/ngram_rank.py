@@ -32,13 +32,14 @@ def rank(fname):
     for p in probs:
         sk = prob_to_sketch[p]
         org_order = sketch_to_order[sk]
-        print sk, ' Current pos:', pos, ' org pos:', org_order, ' Perplexity:', p 
+        #print sk, ' Current pos:', pos, ' org pos:', org_order, ' Perplexity:', p 
+        print sk
         pos += 1
      
 
 def main(argv):
     fname = argv[0]
-    print 'file name:', fname
+    #print 'file name:', fname
     rank(fname)
 
 if __name__ == "__main__":
