@@ -2,9 +2,10 @@ import sys
 import re
 
 def rank(fname):
-    prob_to_sketch = {}
-    sketch_to_order = {}
-    probs = []
+    order_to_sketch = {}
+    order_to_prob = {}
+
+    #org_to_num = {}
 
     order = 1
     with open(fname) as f:
@@ -15,26 +16,33 @@ def rank(fname):
 
             sketch = lines[i].strip()
             result = lines[i+2].strip()
-            sketch_to_order[sketch] = order
+            order_to_sketch[order] = sketch
             nums = re.findall("[-+]?\d+[\.]?\d*[eE]?[-+]?\d*", result) 
             p1 = float(nums[2])
             p2 = float(nums[4])
             #print sketch,' [PROB]', result, p2, nums[4]
-            prob_to_sketch[p2] = sketch
-            probs.append(p2)
+            order_to_prob[order] = p2
+    #        if sketch in org_to_num:
+    #            org_to_num[sketch] = org_to_num[sketch] + 1
+    #        else:
+    #            org_to_num[sketch] = 1
+
             order += 1
 
     ###output ranking#############
     pos = 1
-    #print probs
-    probs.sort()
-    #print probs
-    for p in probs:
-        sk = prob_to_sketch[p]
-        org_order = sketch_to_order[sk]
-        #print sk, ' Current pos:', pos, ' org pos:', org_order, ' Perplexity:', p 
+    sort_map = sorted(order_to_prob.items(), key=lambda x:x[1])
+    for (org_order, prob) in sort_map:
+        sk = order_to_sketch[org_order]
+        #print sk, ' Current pos:', pos, ' org pos:', org_order, ' Perplexity:', prob 
         print sk
-        pos += 1
+        #assert sk in org_to_num
+        #org_to_num[sk] = org_to_num[sk] - 1
+        #pos += 1
+
+    #for key in org_to_num:
+    #    value = org_to_num[key]
+    #    assert value == 0
      
 
 def main(argv):
