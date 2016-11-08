@@ -51,7 +51,7 @@ for myurl in urls:
             if len(accept_code_list) > 0 and flag:
                 #print 'acpt:', acpt_code, 'vote:', acp_vote
                 acpt_code = acpt_code.replace("\"", "")
-                sql = "INSERT INTO post_tb VALUES (\"" + row[0] + "\",\""+ str(1) +"\",\""+ acp_vote +"\",\""+ acpt_code + "\")"
+                sql = "INSERT INTO post_tb VALUES (\"" + myurl + "\",\""+ str(1) +"\",\""+ acp_vote +"\",\""+ acpt_code + "\")"
                 #print sql
                 c2.execute(sql)
 
@@ -79,7 +79,7 @@ for myurl in urls:
             #print 'other:', others, 'vote:', other_vote
 
             others = others.replace("\"", "")
-            sql = "INSERT INTO post_tb VALUES (\"" + row[0] + "\",\""+ str(num) +"\",\""+ other_vote +"\",\""+ others + "\")"
+            sql = "INSERT INTO post_tb VALUES (\"" + myurl + "\",\""+ str(num) +"\",\""+ other_vote +"\",\""+ others + "\")"
             #print sql
             c2.execute(sql)
             num = num +1
