@@ -17,3 +17,9 @@ Re-ranking:
 ngram -lm 2gram_v2.lm -ppl sketches/sketches-size4.txt -debug 1 > size4.tx
 
 python ngram_rank.py size4.txt
+
+=====================================================================
+
+New ranking script for Neo:
+
+python rerank_neo.py ~/research/genesys/sketches/sketches-size6.txt > neo-ngram-size6.txt
