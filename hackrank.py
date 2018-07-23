@@ -4,13 +4,14 @@ import requests
 from time import sleep
 import sqlite3
 
-#conn = sqlite3.connect('morpheus.db')
+conn = sqlite3.connect('hacker_rank.db')
 
-#c = conn.cursor()
+c = conn.cursor()
 
 # Create table
-#c.execute('''CREATE TABLE topic_tb 
-#             (url text, title text, vote text, answer text, src text)''')
+c.execute('''CREATE TABLE hr_sol_tb 
+             (problem text, author text, language text, score text, url text, solution text)''')
+
 payload = {
     'login': 'yufeng.austin@gmail.com',
     'password': 'utaustin1'
@@ -29,7 +30,7 @@ with requests.Session() as s:
     unlock_url = website + '/rest/contests/master/challenges/' + problem + '-difference/unlock_solution'
     s.get(unlock_url, headers=head)
 
-    for p_num in range(1,2):
+    for p_num in range(330,24000):
         try:
             page_url = website + '/challenges/' + problem + '/leaderboard?page=' + str(p_num)
             #page = 'https://www.hackerrank.com/challenges/diagonal-difference/leaderboard?page=' + str(p_num) 
@@ -41,10 +42,22 @@ with requests.Session() as s:
             topics = tree.xpath('//*[@class="table-row flex"]')
             print len(topics)
             for topic in topics:
-                hacker = topic.xpath('div[1]/div[1]/a/text()')[0]
-                language = topic.xpath('div[4]/div[1]/text()')[0]
-                score = topic.xpath('div[5]/div[1]/text()')[0]
-                url = website + topic.xpath('div[6]/span/a/@href')[0]
+                hacker_list = topic.xpath('div[1]/div[1]/a/text()')
+                if not hacker_list:
+                    continue
+                hacker = hacker_list[0]
+                lang_list = topic.xpath('div[4]/div[1]/text()')
+                if not lang_list:
+                    continue
+                language = lang_list[0]
+                score_list = topic.xpath('div[5]/div[1]/text()')
+                if not score_list:
+                    continue
+                score = score_list[0]
+                url_list =topic.xpath('div[6]/span/a/@href')
+                if not url_list:
+                    continue
+                url = website + url_list[0]
 
                 print 'hacker: ' + hacker
                 print 'language: ' + language
@@ -53,25 +66,24 @@ with requests.Session() as s:
                 if language == 'C' and score == '10.00':
                     resp_code = s.get(url, headers=head)
                     code = resp_code.content
-                    print resp_code
-                    print resp_code.text
-                    break
-
-                #print title, ' ', url, ' ', vote, ' ', answer
-                # Insert a row of data
-                #sql = "INSERT INTO topic_tb VALUES (\"" + url[0] + "\",\""+ newT1 +"\",\""+ vote[0] +"\",\""+ ans + "\",\"" + type1 +"\")"
-                #print sql
-                #c.execute(sql)
+                    sol = resp_code.text
+                    sol = sol.replace('"', '\""')
+                    # Insert a row of data
+                    sql = "INSERT INTO hr_sol_tb VALUES (\"" + problem + "\",\""+ hacker +"\",\""+ language +"\",\""+ score + "\",\"" + url + "\",\"" + sol +"\")"
+                    #print sql
+                    c.execute(sql)
                 
             # Save (commit) the changes
-            #conn.commit()
+            if p_num % 20 == 0:
+                conn.commit()
 
             #sleep for a while
-            sleep(2)
+            sleep(1)
         except:
-            print "Caught it!"
+            print "Caught it! Stop at page " + str(p_num)
+            conn.commit()
             raise
 
     # We can also close the connection if we are done with it.
     # Just be sure any changes have been committed or they will be lost.
-    #conn.close()
+    conn.close()
