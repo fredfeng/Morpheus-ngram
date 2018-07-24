@@ -27,10 +27,10 @@ with requests.Session() as s:
     p = s.post(loginPage, data=payload)
     # print the html returned or something more intelligent to see if it's a successful login page.
     head = {'cookie': cook, 'X-CSRF-Token': p.json()['csrf_token']}
-    unlock_url = website + '/rest/contests/master/challenges/' + problem + '-difference/unlock_solution'
+    unlock_url = website + '/rest/contests/master/challenges/' + problem + '/unlock_solution'
     s.get(unlock_url, headers=head)
 
-    for p_num in range(330,24000):
+    for p_num in range(1,4000):
         try:
             page_url = website + '/challenges/' + problem + '/leaderboard?page=' + str(p_num)
             #page = 'https://www.hackerrank.com/challenges/diagonal-difference/leaderboard?page=' + str(p_num) 
